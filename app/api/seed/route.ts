@@ -20,24 +20,24 @@ export async function GET() {
     {
       id: 'gpt-1',
       name: 'Tax Refund Coach',
-      description: 'Guides users to make smart decisions with tax refunds using SFBT.',
-      systemPrompt: 'You are a supportive, positive financial coach...',
+      description: 'Helps users manage tax refunds using solution-focused brief therapy.',
+      systemPrompt: 'You are a supportive refund coach...',
       isPremium: false,
       category: 'Finance',
       modelProvider: 'openai',
-      thumbnail: '/images/tax-refund.png',
-      createdById: user.id, // ✅ now required
+      thumbnail: '/images/tax.png',
+      createdById: user.id,
     },
     {
       id: 'gpt-2',
-      name: 'Immigration Advisor',
-      description: 'Helps international students navigate immigration paperwork.',
-      systemPrompt: 'You are a friendly immigration assistant...',
+      name: 'Immigration Assistant',
+      description: 'Helps international students understand immigration paperwork.',
+      systemPrompt: 'You are a knowledgeable immigration assistant...',
       isPremium: true,
       category: 'Legal',
       modelProvider: 'groq',
       thumbnail: '/images/immigration.png',
-      createdById: user.id, // ✅ now required
+      createdById: user.id,
     }
   ]
 
