@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String?
+  role             Role     @default(END_USER)
+  createdAt        DateTime @default(now())
+  gpts             GPT[]    @relation("UserGpts")
+}
+
+model GPT {
+  id          String   @id @default(cuid())
+  name        String
+  systemPrompt String
+  isPremium   Boolean  @default(false)
+  createdById String
+  createdBy   User     @relation("UserGpts", fields: [createdById], references: [id])
+}
+
+enum Role {
+  END_USER
+  SUBSCRIBER
+  ADMIN
+  SUPER_ADMIN
+}
