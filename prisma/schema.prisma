@@ -17,13 +17,16 @@ model User {
 }
 
 model GPT {
-  id          String   @id @default(cuid())
-  name        String
-  systemPrompt String
-  isPremium   Boolean  @default(false)
-  createdById String
-  createdBy   User     @relation("UserGpts", fields: [createdById], references: [id])
+  id             String @id
+  name           String
+  description    String
+  systemPrompt   String
+  isPremium      Boolean
+  category       String
+  modelProvider  String
+  thumbnail      String
 }
+
 
 enum Role {
   END_USER
