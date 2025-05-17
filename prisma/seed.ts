@@ -17,18 +17,21 @@ async function main() {
 
   const gpts = [
     {
+      id: 'tax-refund-gpt',
       name: 'Tax Refund Advisor GPT',
       systemPrompt: 'You are a helpful GPT that gives personalized refund advice using solution-focused brief therapy principles...',
       isPremium: false,
       createdById: user.id,
     },
     {
+      id: 'immigration-helper-gpt',
       name: 'Immigration Helper GPT',
       systemPrompt: 'You are a legal assistant helping international students understand their visa options clearly...',
       isPremium: true,
       createdById: user.id,
     },
     {
+      id: 'career-coach-gpt',
       name: 'AI Career Coach',
       systemPrompt: 'You help young adults and students build confidence and set goals toward a career path...',
       isPremium: false,
