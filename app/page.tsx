@@ -6,5 +6,5 @@ export default function HomePage() {
         Your SaaS GPT platform is running. You'll soon have login, GPT selection, and more.
       </p>
     </main>
-  )
+  );
 }
