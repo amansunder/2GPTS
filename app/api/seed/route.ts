@@ -6,6 +6,7 @@ export async function GET() {
 
   const adminEmail = process.env.ADMIN_EMAIL || 'contact@2gpts.com'
 
+  // Create or update the super admin user
   const user = await prisma.user.upsert({
     where: { email: adminEmail },
     update: { role: 'SUPER_ADMIN' },
@@ -16,28 +17,29 @@ export async function GET() {
     },
   })
 
+  // Seed GPTs with createdBy relation
   const gpts = [
     {
       id: 'gpt-1',
       name: 'Tax Refund Coach',
       description: 'Helps users manage tax refunds using solution-focused brief therapy.',
-      systemPrompt: 'You are a supportive refund coach...',
+      systemPrompt: 'You are a supportive refund coach that helps people think positively and take action with their tax refund.',
       isPremium: false,
       category: 'Finance',
       modelProvider: 'openai',
       thumbnail: '/images/tax.png',
-      createdById: user.id, // ✅ REQUIRED field
+      createdBy: { connect: { id: user.id } }, // ✅ Required relation
     },
     {
       id: 'gpt-2',
       name: 'Immigration Assistant',
       description: 'Helps international students understand immigration paperwork.',
-      systemPrompt: 'You are a helpful immigration assistant...',
+      systemPrompt: 'You are a helpful, friendly immigration assistant who can guide students through document requirements.',
       isPremium: true,
       category: 'Legal',
       modelProvider: 'groq',
       thumbnail: '/images/immigration.png',
-      createdById: user.id, // ✅ REQUIRED field
+      createdBy: { connect: { id: user.id } }, // ✅ Required relation
     }
   ]
 
