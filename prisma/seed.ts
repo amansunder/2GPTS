@@ -38,7 +38,7 @@ async function main() {
 
   for (const gpt of gpts) {
     await prisma.gPT.upsert({
-      where: { name: gpt.name },
+      where: { id: gpt.id },
       update: gpt,
       create: gpt,
     })
