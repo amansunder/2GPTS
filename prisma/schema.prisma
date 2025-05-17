@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id               String   @id @default(cuid())
-  email            String   @unique
-  name             String?
-  role             Role     @default(END_USER)
-  createdAt        DateTime @default(now())
-  gpts             GPT[]    @relation("UserGpts")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  gpts      GPT[]    @relation("UserGpts")
+  createdAt DateTime @default(now())
+  role      Role     @default(END_USER)
 }
 
 model GPT {
-  id             String @id
+  id             String   @id @default(cuid())
   name           String
   description    String
   systemPrompt   String
@@ -25,8 +25,10 @@ model GPT {
   category       String
   modelProvider  String
   thumbnail      String
-}
 
+  createdById    String
+  createdBy      User     @relation("UserGpts", fields: [createdById], references: [id])
+}
 
 enum Role {
   END_USER
