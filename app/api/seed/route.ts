@@ -1,54 +1,44 @@
-import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function GET() {
-  const prisma = new PrismaClient()
+  try {
+    const gpts = [
+      {
+        id: 'gpt-1',
+        name: 'Tax Refund Coach',
+        description: 'Guides users to make smart decisions with tax refunds using SFBT.',
+        systemPrompt: 'You are a supportive, positive financial coach...',
+        isPremium: false,
+        category: 'Finance',
+        modelProvider: 'openai',
+        thumbnail: '/images/tax-refund.png',
+      },
+      {
+        id: 'gpt-2',
+        name: 'Immigration Advisor',
+        description: 'Helps international students navigate immigration paperwork.',
+        systemPrompt: 'You are a friendly immigration assistant...',
+        isPremium: true,
+        category: 'Legal',
+        modelProvider: 'groq',
+        thumbnail: '/images/immigration.png',
+      },
+    ];
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'contact@2gpts.com'
+    for (const gpt of gpts) {
+      await prisma.gPT.upsert({
+        where: { id: gpt.id },
+        update: gpt,
+        create: gpt,
+      });
+    }
 
-  const user = await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: { role: 'SUPER_ADMIN' },
-    create: {
-      email: adminEmail,
-      name: 'Platform Owner',
-      role: 'SUPER_ADMIN',
-    },
-  })
-
-  const gpts = [
-    {
-      id: 'tax-refund-gpt',
-      name: 'Tax Refund Advisor GPT',
-      systemPrompt: 'You are a helpful GPT that gives personalized refund advice using solution-focused brief therapy principles...',
-      isPremium: false,
-      createdById: user.id,
-    },
-    {
-      id: 'immigration-helper-gpt',
-      name: 'Immigration Helper GPT',
-      systemPrompt: 'You are a legal assistant helping international students understand their visa options clearly...',
-      isPremium: true,
-      createdById: user.id,
-    },
-    {
-      id: 'career-coach-gpt',
-      name: 'AI Career Coach',
-      systemPrompt: 'You help young adults and students build confidence and set goals toward a career path...',
-      isPremium: false,
-      createdById: user.id,
-    },
-  ]
-
-  for (const gpt of gpts) {
-    await prisma.gPT.upsert({
-      where: { id: gpt.id },
-      update: gpt,
-      create: gpt,
-    })
+    return NextResponse.json({ message: 'Seeding complete.' });
+  } catch (error) {
+    console.error('Seeding error:', error);
+    return new NextResponse('Error seeding GPTs', { status: 500 });
   }
-
-  return NextResponse.json({
-    message: `Seeded ${gpts.length} GPTs and super admin: ${user.email}`,
-  })
 }
