@@ -26,18 +26,18 @@ export async function GET() {
       category: 'Finance',
       modelProvider: 'openai',
       thumbnail: '/images/tax.png',
-      createdById: user.id,
+      createdById: user.id, // ✅ REQUIRED field
     },
     {
       id: 'gpt-2',
       name: 'Immigration Assistant',
       description: 'Helps international students understand immigration paperwork.',
-      systemPrompt: 'You are a knowledgeable immigration assistant...',
+      systemPrompt: 'You are a helpful immigration assistant...',
       isPremium: true,
       category: 'Legal',
       modelProvider: 'groq',
       thumbnail: '/images/immigration.png',
-      createdById: user.id,
+      createdById: user.id, // ✅ REQUIRED field
     }
   ]
 
