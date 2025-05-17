@@ -6,7 +6,7 @@ export async function GET() {
 
   const adminEmail = process.env.ADMIN_EMAIL || 'contact@2gpts.com'
 
-  // Create or update the super admin user
+  // Ensure super admin exists
   const user = await prisma.user.upsert({
     where: { email: adminEmail },
     update: { role: 'SUPER_ADMIN' },
@@ -17,36 +17,39 @@ export async function GET() {
     },
   })
 
-  // Seed GPTs with createdBy relation
   const gpts = [
     {
       id: 'gpt-1',
       name: 'Tax Refund Coach',
       description: 'Helps users manage tax refunds using solution-focused brief therapy.',
-      systemPrompt: 'You are a supportive refund coach that helps people think positively and take action with their tax refund.',
+      systemPrompt: 'You are a supportive refund coach...',
       isPremium: false,
       category: 'Finance',
       modelProvider: 'openai',
       thumbnail: '/images/tax.png',
-      createdBy: { connect: { id: user.id } }, // ✅ Required relation
+      createdBy: { connect: { id: user.id } }, // ✅ required
     },
     {
       id: 'gpt-2',
       name: 'Immigration Assistant',
       description: 'Helps international students understand immigration paperwork.',
-      systemPrompt: 'You are a helpful, friendly immigration assistant who can guide students through document requirements.',
+      systemPrompt: 'You are a helpful assistant for students...',
       isPremium: true,
       category: 'Legal',
       modelProvider: 'groq',
       thumbnail: '/images/immigration.png',
-      createdBy: { connect: { id: user.id } }, // ✅ Required relation
+      createdBy: { connect: { id: user.id } }, // ✅ required
     }
   ]
 
   for (const gpt of gpts) {
     await prisma.gPT.upsert({
       where: { id: gpt.id },
-      update: gpt,
+      update: {
+        ...gpt,
+        // remove nested `createdBy` from update to avoid error
+        createdBy: undefined,
+      },
       create: gpt,
     })
   }
