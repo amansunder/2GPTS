@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // adjust if your path is different
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // ✅ Create the system user if it doesn't exist
-    await prisma.user.upsert({
+    // Ensure the system user exists
+    const systemUser = await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
       create: {
         id: 'system',
-        name: 'System User',
+        name: 'System',
         email: 'system@2gpts.ai',
       },
     });
 
-    // ✅ Then insert GPTs
+    // Seed GPTs
     await prisma.gPT.createMany({
       data: [
         {
@@ -26,7 +26,7 @@ export async function GET() {
           category: 'Finance',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/tax.png',
-          createdById: 'system',
+          createdById: systemUser.id,
         },
         {
           id: '2',
@@ -37,7 +37,7 @@ export async function GET() {
           category: 'Education',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/accreditation.png',
-          createdById: 'system',
+          createdById: systemUser.id,
         },
       ],
       skipDuplicates: true,
