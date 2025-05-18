@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // 1. Ensure 'system' user exists
-    await prisma.user.upsert({
+    // 1. Create or update the 'system' user and wait for the write to complete
+    const systemUser = await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
       create: {
@@ -14,9 +14,9 @@ export async function GET() {
       },
     });
 
-    // 2. Create GPT entries one by one using nested connect
-    await prisma.gPT.create({
-      data: {
+    // 2. Then insert GPTs one by one (not createMany) to ensure FK constraints are honored
+    const gptsToSeed = [
+      {
         id: '1',
         name: 'TaxBot',
         description: 'Helps low-income users with tax refund goals',
@@ -25,12 +25,9 @@ export async function GET() {
         category: 'Finance',
         modelProvider: 'OpenAI',
         thumbnail: '/thumbnails/tax.png',
-        createdBy: { connect: { id: 'system' } },
+        createdById: systemUser.id,
       },
-    });
-
-    await prisma.gPT.create({
-      data: {
+      {
         id: '2',
         name: 'Accreditor AI',
         description: 'Helps universities with accreditation documents',
@@ -39,9 +36,17 @@ export async function GET() {
         category: 'Education',
         modelProvider: 'OpenAI',
         thumbnail: '/thumbnails/accreditation.png',
-        createdBy: { connect: { id: 'system' } },
+        createdById: systemUser.id,
       },
-    });
+    ];
+
+    for (const gpt of gptsToSeed) {
+      await prisma.gPT.upsert({
+        where: { id: gpt.id },
+        update: {},
+        create: gpt,
+      });
+    }
 
     return NextResponse.json({ message: 'Seed successful' });
   } catch (error) {
