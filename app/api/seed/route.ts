@@ -1,6 +1,5 @@
-// Triggering deploy with a comment
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -14,7 +13,7 @@ export async function GET() {
       },
     });
 
-    // 2. Then insert GPTs one by one, using the generated user ID
+    // 2. Seed GPTs linked to this user
     const gptsToSeed = [
       {
         id: '1',
