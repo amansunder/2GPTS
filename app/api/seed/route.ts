@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // Adjust the path if needed
+import { prisma } from '@/lib/prisma'; // make sure this path matches your structure
 
 export async function GET() {
   try {
-    // Ensure the system user exists
+    // Ensure system user exists
     await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
       create: {
         id: 'system',
-        name: 'System',
+        name: 'System User',
         email: 'system@2gpts.ai',
       },
     });
