@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // make sure this path matches your structure
+import { prisma } from '@/lib/prisma'; // adjust this path if needed
 
 export async function GET() {
   try {
@@ -9,7 +9,7 @@ export async function GET() {
       update: {},
       create: {
         id: 'system',
-        name: 'System User',
+        name: 'System',
         email: 'system@2gpts.ai',
       },
     });
