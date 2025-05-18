@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma'; // adjust if needed
 
 export async function GET() {
   try {
-    // Create the system user if not exists
+    // ✅ Ensure 'system' user exists
     await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
       create: {
         id: 'system',
-        name: 'System User',
+        name: 'System',
         email: 'system@2gpts.ai',
       },
     });
 
-    // Now seed GPTs
+    // ✅ Seed GPTs
     await prisma.gPT.createMany({
       data: [
         {
