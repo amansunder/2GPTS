@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    // Create the system user if not exists
+    await prisma.user.upsert({
+      where: { id: 'system' },
+      update: {},
+      create: {
+        id: 'system',
+        name: 'System User',
+        email: 'system@2gpts.ai',
+      },
+    });
+
+    // Now seed GPTs
     await prisma.gPT.createMany({
       data: [
         {
@@ -16,7 +26,7 @@ export async function GET() {
           category: 'Finance',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/tax.png',
-          createdById: 'system'
+          createdById: 'system',
         },
         {
           id: '2',
@@ -27,10 +37,10 @@ export async function GET() {
           category: 'Education',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/accreditation.png',
-          createdById: 'system'
-        }
+          createdById: 'system',
+        },
       ],
-      skipDuplicates: true
+      skipDuplicates: true,
     });
 
     return NextResponse.json({ message: 'Seed successful' });
