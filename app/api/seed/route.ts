@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma'; // adjust this path if needed
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -14,7 +16,7 @@ export async function GET() {
           category: 'Finance',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/tax.png',
-          createdById: 'system',
+          createdById: 'system'
         },
         {
           id: '2',
@@ -25,10 +27,10 @@ export async function GET() {
           category: 'Education',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/accreditation.png',
-          createdById: 'system',
-        },
+          createdById: 'system'
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
 
     return NextResponse.json({ message: 'Seed successful' });
