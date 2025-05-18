@@ -14,7 +14,7 @@ export async function GET() {
           category: 'Finance',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/tax.png',
-          createdBy: 'system',
+          createdById: 'system',
         },
         {
           id: '2',
@@ -25,7 +25,7 @@ export async function GET() {
           category: 'Education',
           modelProvider: 'OpenAI',
           thumbnail: '/thumbnails/accreditation.png',
-          createdBy: 'system',
+          createdById: 'system',
         },
       ],
       skipDuplicates: true,
