@@ -3,18 +3,17 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // 1. Create or update the 'system' user and wait for the write to complete
+    // 1. Create or update the 'system' user based on email
     const systemUser = await prisma.user.upsert({
-      where: { id: 'system' },
+      where: { email: 'system@2gpts.ai' },
       update: {},
       create: {
-        id: 'system',
         name: 'System',
         email: 'system@2gpts.ai',
       },
     });
 
-    // 2. Then insert GPTs one by one (not createMany) to ensure FK constraints are honored
+    // 2. Then insert GPTs one by one, using the generated user ID
     const gptsToSeed = [
       {
         id: '1',
