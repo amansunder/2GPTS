@@ -14,9 +14,9 @@ export async function GET() {
       },
     });
 
-    // 2. Manually create GPTs with foreign key references (NOT createMany)
-    const gpts = [
-      {
+    // 2. Create GPT entries one by one using nested connect
+    await prisma.gPT.create({
+      data: {
         id: '1',
         name: 'TaxBot',
         description: 'Helps low-income users with tax refund goals',
@@ -25,9 +25,12 @@ export async function GET() {
         category: 'Finance',
         modelProvider: 'OpenAI',
         thumbnail: '/thumbnails/tax.png',
-        createdById: 'system',
+        createdBy: { connect: { id: 'system' } },
       },
-      {
+    });
+
+    await prisma.gPT.create({
+      data: {
         id: '2',
         name: 'Accreditor AI',
         description: 'Helps universities with accreditation documents',
@@ -36,17 +39,9 @@ export async function GET() {
         category: 'Education',
         modelProvider: 'OpenAI',
         thumbnail: '/thumbnails/accreditation.png',
-        createdById: 'system',
+        createdBy: { connect: { id: 'system' } },
       },
-    ];
-
-    for (const gpt of gpts) {
-      await prisma.gPT.upsert({
-        where: { id: gpt.id },
-        update: {},
-        create: gpt,
-      });
-    }
+    });
 
     return NextResponse.json({ message: 'Seed successful' });
   } catch (error) {
