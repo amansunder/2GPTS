@@ -54,6 +54,5 @@ export async function GET() {
   } catch (error) {
     console.error('Seed error:', error);
     return NextResponse.json({ error: 'Failed to seed database' }, { status: 500 });
-    
   }
 }
