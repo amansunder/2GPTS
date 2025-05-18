@@ -16,7 +16,7 @@ export async function GET() {
         category: 'Finance',
         modelProvider: 'OpenAI',
         thumbnail: '/thumbnails/tax.png',
-        createdBy: 'system', // Replace with actual user ID logic later if needed
+        createdBy: 'system',
       },
       {
         id: '2',
