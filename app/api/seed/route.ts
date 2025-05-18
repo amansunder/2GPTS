@@ -1,19 +1,20 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma'; // Adjust the path if needed
 
 export async function GET() {
   try {
-    // 🛠️ Ensure 'system' user exists before seeding GPTs
+    // Ensure the system user exists
     await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
       create: {
         id: 'system',
         name: 'System',
-        email: 'system@2gpts.ai', // must be unique, fake is fine
+        email: 'system@2gpts.ai',
       },
     });
 
+    // Seed GPTs
     await prisma.gPT.createMany({
       data: [
         {
