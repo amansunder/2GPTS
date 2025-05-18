@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // adjust this path if needed
+import { prisma } from '../../lib/prisma'; // adjust this path if needed
 
 export async function GET() {
   try {
