@@ -1,7 +1,6 @@
 node_modules
-.env
 .next
+.env
 out
 *.log
 *.sqlite
-node_modules
