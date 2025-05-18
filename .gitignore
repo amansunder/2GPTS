@@ -4,3 +4,4 @@ node_modules
 out
 *.log
 *.sqlite
+node_modules
