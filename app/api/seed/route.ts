@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // 1. Ensure 'system' user exists
+    // 1. Ensure the 'system' user exists
     await prisma.user.upsert({
       where: { id: 'system' },
       update: {},
@@ -14,7 +14,7 @@ export async function GET() {
       },
     });
 
-    // 2. Seed GPTs one by one
+    // 2. Seed GPTs using upsert (NOT createMany)
     const gpts = [
       {
         id: '1',
