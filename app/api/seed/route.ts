@@ -1,18 +1,18 @@
-// File: app/api/seed/route.ts
+// app/api/seed/route.ts
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// Prevent static generation from preloading this route
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'; // ensures this route runs at request time, not build time
 
 export async function GET() {
-  // Hard stop for production build environments
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json({ error: 'Seeding not allowed in production' }, { status: 403 });
-  }
-
   try {
-    // Ensure 'system' user exists
+    // Prevent accidental seeding in production
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ error: 'Seeding is not allowed in production' }, { status: 403 });
+    }
+
+    // 1. Create or update the 'system' user based on email
     const systemUser = await prisma.user.upsert({
       where: { email: 'system@2gpts.ai' },
       update: {},
@@ -22,7 +22,7 @@ export async function GET() {
       },
     });
 
-    // GPTs to seed
+    // 2. Then insert GPTs one by one, using the generated user ID
     const gptsToSeed = [
       {
         id: '1',
@@ -48,7 +48,6 @@ export async function GET() {
       },
     ];
 
-    // Upsert GPTs
     for (const gpt of gptsToSeed) {
       await prisma.gPT.upsert({
         where: { id: gpt.id },
