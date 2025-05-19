@@ -1,12 +1,18 @@
-// Prevent static optimization of this route
+// File: app/api/seed/route.ts
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+// Prevent static generation from preloading this route
 export const dynamic = 'force-dynamic';
 
-import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma';
-
 export async function GET() {
+  // Hard stop for production build environments
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Seeding not allowed in production' }, { status: 403 });
+  }
+
   try {
-    // 1. Create or update the 'system' user based on email
+    // Ensure 'system' user exists
     const systemUser = await prisma.user.upsert({
       where: { email: 'system@2gpts.ai' },
       update: {},
@@ -16,7 +22,7 @@ export async function GET() {
       },
     });
 
-    // 2. Seed GPTs linked to this user
+    // GPTs to seed
     const gptsToSeed = [
       {
         id: '1',
@@ -42,6 +48,7 @@ export async function GET() {
       },
     ];
 
+    // Upsert GPTs
     for (const gpt of gptsToSeed) {
       await prisma.gPT.upsert({
         where: { id: gpt.id },
