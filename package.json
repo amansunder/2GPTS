@@ -13,10 +13,11 @@
     "@auth/prisma-adapter": "2.7.0",
     "@prisma/client": "6.8.2",
     "next": "14.0.3",
-    "next-auth": "4.24.5",
+    "next-auth": "^4.24.5",
     "openai": "4.20.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "resend": "^4.5.1"
   },
   "devDependencies": {
     "@types/node": "20.9.4",

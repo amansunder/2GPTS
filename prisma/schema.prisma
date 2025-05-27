@@ -7,32 +7,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Institution {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  gpts      GPT[]    @relation("UserGpts")
+  name      String
+  slug      String   @unique
+  domain    String   @unique
   createdAt DateTime @default(now())
-  role      Role     @default(END_USER)
+  updatedAt DateTime @updatedAt
+
+  users    User[]
+  gpts     GPT[]
+  apiUsage ApiUsage[]
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
+  role          Role         @default(SUBSCRIBER)
+  institutionId String?
+  institution   Institution? @relation(fields: [institutionId], references: [id])
+  createdAt     DateTime     @default(now())
+
+  sessions    Session[]
+  accounts    Account[]
+  gptsCreated GPT[]      @relation("creator")
+  apiUsage    ApiUsage[]
 }
 
 model GPT {
-  id             String   @id @default(cuid())
-  name           String
-  description    String
-  systemPrompt   String
-  isPremium      Boolean
-  category       String
-  modelProvider  String
-  thumbnail      String
+  id            String  @id @default(cuid())
+  name          String
+  description   String
+  systemPrompt  String
+  isPremium     Boolean
+  category      String
+  modelProvider String
+  thumbnail     String
 
-  createdById    String
-  createdBy      User     @relation("UserGpts", fields: [createdById], references: [id])
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+
+  creatorId String?
+  creator   User?   @relation("creator", fields: [creatorId], references: [id])
+
+  apiUsage ApiUsage[]
+}
+
+model ApiUsage {
+  id            String      @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+
+  gptId String
+  gpt   GPT    @relation(fields: [gptId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  timestamp  DateTime @default(now())
+  tokenCount Int
+  cost       Float
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  expires      DateTime
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id])
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 enum Role {
-  END_USER
-  SUBSCRIBER
-  ADMIN
   SUPER_ADMIN
+  ADMIN
+  SUBSCRIBER
+  FINANCE
+  ENGINEER
+  MARKETING
+  LEGAL
 }
